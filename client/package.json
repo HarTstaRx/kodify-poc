@@ -1,5 +1,5 @@
 {
-  "name": "deuspoc",
+  "name": "kodify-poc-client",
   "version": "1.0.0",
   "main": "www/bundle.js",
   "license": "MIT",
