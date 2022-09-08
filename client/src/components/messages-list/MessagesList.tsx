@@ -15,12 +15,7 @@ import {
 import { randomId, isNullOrEmpty } from '../../shared/utils';
 import { Bubble } from '../bubble/Bubble';
 
-interface MessagesListProps {
-  onNickChange: (newNick: string) => void;
-}
-export const MessagesList = ({
-  onNickChange,
-}: MessagesListProps): JSX.Element => {
+export const MessagesList = (): JSX.Element => {
   const storeContext = useContext<StoreContextInterface>(StoreContext);
   const [messages, setMessages] = useState<MessageInterface[]>([]);
   const scrollHelper = useRef<HTMLDivElement>(null);
@@ -29,10 +24,6 @@ export const MessagesList = ({
     (evt: MessageEvent<string>) => {
       if (isNullOrEmpty(evt.data)) return;
       const newMessage = JSON.parse(evt.data) as MessageInterface;
-      if (newMessage.newNick) {
-        onNickChange(newMessage.newNick);
-        return;
-      }
       setMessages([...messages, newMessage]);
     },
     [messages]

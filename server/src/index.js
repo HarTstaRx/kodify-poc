@@ -27,6 +27,11 @@ router.post('/stop-typing', (request, response) => {
   response.sendStatus(200);
 });
 
+router.post('/nick', (request, response) => {
+  channel.publish(request.body, 'nick');
+  response.sendStatus(200);
+});
+
 router.get('/messages', (request, response) => {
   return channel.subscribe(request, response);
 });
