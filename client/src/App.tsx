@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChatInput } from './components/chat-input/ChatInput';
 import { CHAT_LISTENER } from './constants';
 import { MessageInterface } from './shared/interfaces';
+import { Bubble } from './components';
+import { randomId } from './shared/utils';
 
 import './App.scss';
 
@@ -46,7 +48,11 @@ function App(): JSX.Element {
           <div className='chat__header'>{chatName}</div>
           <div className='chat__body'>
             {messages.map((msg) => (
-              <Bubble {...msg} />
+              <Bubble
+                key={randomId()}
+                {...msg}
+                isMine={msg.from === nick}
+              />
             ))}
           </div>
           <ChatInput

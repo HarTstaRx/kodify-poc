@@ -1,0 +1,14 @@
+.bubble {
+  display: flex;
+  background-color: gray;
+  border: 1px solid darkgray;
+  padding: 5px 20px;
+  max-width: 200px;
+  border-radius: 10px;
+
+  &.own {
+    background-color: green;
+    border: 1px solid darkseagreen;
+    align-self: flex-end;
+  }
+}
