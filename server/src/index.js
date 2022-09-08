@@ -17,6 +17,16 @@ router.post('/chat', (request, response) => {
   response.sendStatus(200);
 });
 
+router.post('/start-typing', (request, response) => {
+  channel.publish(request.body, 'start-typing');
+  response.sendStatus(200);
+});
+
+router.post('/stop-typing', (request, response) => {
+  channel.publish(request.body, 'stop-typing');
+  response.sendStatus(200);
+});
+
 router.get('/messages', (request, response) => {
   return channel.subscribe(request, response);
 });
