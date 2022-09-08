@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import { StoreContextInterface, CacheInterface } from '../shared/interfaces';
 import { StoreContext } from '../contexts/store.context';
+import { randomId } from '../shared/utils';
 
 interface Props {
   children: JSX.Element;
@@ -22,7 +23,9 @@ export default function StoreProvider(props: Props): JSX.Element {
   };
 
   const [context, setContext] = useState<StoreContextInterface>({
-    cache: {},
+    cache: {
+      id: randomId(),
+    },
     changeCache,
   });
 

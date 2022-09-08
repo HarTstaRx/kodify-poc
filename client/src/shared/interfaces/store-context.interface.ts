@@ -1,5 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface CacheInterface {}
+export interface CacheInterface {
+  nick?: string;
+  id: string;
+}
 
 export interface StoreContextInterface {
   cache: CacheInterface;

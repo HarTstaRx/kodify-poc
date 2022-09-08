@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
-import { MessageInterface } from '../../shared/interfaces';
+import { StoreContext } from '../../contexts/store.context';
+import {
+  MessageInterface,
+  StoreContextInterface,
+} from '../../shared/interfaces';
+import { isNullOrEmpty } from '../../shared/utils';
 
 interface ChatInputProps {
-  currentNick: string;
   handleSendMessage: (newMessage: MessageInterface) => void;
 }
 
-export const ChatInput = ({
-  currentNick,
-  handleSendMessage,
-}: ChatInputProps) => {
+export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
+  const storeContext = useContext<StoreContextInterface>(StoreContext);
   const [text, setText] = useState<string | undefined>();
 
   const buildMessage = (): MessageInterface => {
@@ -34,7 +36,7 @@ export const ChatInput = ({
     else textToSend = text;
 
     return {
-      from: currentNick,
+      from: storeContext.cache.id,
       timestamp: new Date(),
       isDeleted: text === '/oops',
       isFadeLast: text === '/fadelast',
@@ -69,7 +71,12 @@ export const ChatInput = ({
         onChange={(evt) => setText(evt.target.value)}
         onKeyDown={(evt) => handleKeyDown(evt.key)}
       />
-      <button onClick={sendMessage}>Send</button>
+      <button
+        onClick={sendMessage}
+        disabled={isNullOrEmpty(text)}
+      >
+        Send
+      </button>
     </div>
   );
 };
