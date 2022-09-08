@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChatInput } from './components/chat-input/ChatInput';
 import { CHAT_LISTENER } from './constants';
 import { MessageInterface } from './shared/interfaces';
-import { Bubble } from './components';
+import { Bubble, Typing } from './components';
 import { randomId } from './shared/utils';
 
 import './App.scss';
@@ -11,10 +11,16 @@ import './App.scss';
 function App(): JSX.Element {
   const [chatName, setChatName] = useState<string | undefined>();
   const [messages, setMessages] = useState<MessageInterface[]>([]);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
   const [nick, setNick] = useState<string>('unknown');
   const scrollHelper = useRef<HTMLDivElement>(null);
 
   const sendMessage = (newMessage: MessageInterface) => {
+    if (newMessage.newNick) setNick(newMessage.newNick);
+    if (!isTyping) {
+      setIsTyping(true);
+      setTimeout(() => setIsTyping(false), 5000);
+    }
     setMessages([...messages, newMessage]);
   };
 
@@ -45,7 +51,10 @@ function App(): JSX.Element {
       </header>
       <main>
         <div className='chat'>
-          <div className='chat__header'>{chatName}</div>
+          <div className='chat__header'>
+            {chatName}
+            {isTyping ? <Typing /> : <></>}
+          </div>
           <div className='chat__body'>
             {messages.map((msg) => (
               <Bubble
@@ -54,6 +63,10 @@ function App(): JSX.Element {
                 isMine={msg.from === nick}
               />
             ))}
+            <div
+              className='scrollHelper'
+              ref={scrollHelper}
+            />
           </div>
           <ChatInput
             handleSendMessage={sendMessage}

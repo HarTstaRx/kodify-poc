@@ -9,14 +9,7 @@ interface BubbleProps extends MessageInterface {
 
 export const Bubble = ({
   text,
-  from,
   isDeleted,
-  isFadeLast,
-  isHighlighted,
-  isThinking,
-  timestamp,
-  countDown,
-  newNick,
   isMine,
 }: BubbleProps): JSX.Element => {
   if (isDeleted) return <></>;

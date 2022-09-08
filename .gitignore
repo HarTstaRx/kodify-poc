@@ -144,5 +144,7 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/node
 
 www
+www/*
 server/www
 client/www
+config/tsconfig.tsbuildinfo
