@@ -1,6 +1,7 @@
 export interface CacheInterface {
+  userId: string;
   nick?: string;
-  id: string;
+  lastMessageId?: string;
 }
 
 export interface StoreContextInterface {

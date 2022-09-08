@@ -2,6 +2,7 @@ import {
   MessageInterface,
   TypingInterface,
   NickInterface,
+  DeleteLastInterface,
 } from '../shared/interfaces';
 import { BaseService } from './base.service';
 
@@ -16,6 +17,8 @@ class ChatService extends BaseService {
     this.postData(`${this.#endpoint}stop-typing`, command);
   changeNick = (command: NickInterface): Promise<void> =>
     this.postData(`${this.#endpoint}nick`, command);
+  deleteLast = (command: DeleteLastInterface): Promise<void> =>
+    this.postData(`${this.#endpoint}oops`, command);
 }
 
 export const chatService = new ChatService();

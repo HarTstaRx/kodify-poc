@@ -26,6 +26,13 @@ function App(): JSX.Element {
       nick: newMessage.newNick ?? chatName,
     });
 
+  const deleteLast = async (newMessage: MessageInterface) =>
+    await chatService.deleteLast({
+      from: newMessage.from,
+      nick: newMessage.newNick ?? chatName,
+      messageId: newMessage.deleted?.messageId ?? '',
+    });
+
   const sendMessage = async (newMessage: MessageInterface) =>
     await chatService.sendMessage(newMessage);
 
@@ -34,6 +41,8 @@ function App(): JSX.Element {
     if (newMessage.newNick) {
       storeContext.changeCache({ nick: newMessage.newNick });
       promise = changeNick;
+    } else if (newMessage.deleted) {
+      promise = deleteLast;
     }
     try {
       await promise(newMessage);
@@ -45,19 +54,18 @@ function App(): JSX.Element {
   const handleChangeNick = (evt: MessageEvent<string>) => {
     if (isNullOrEmpty(evt.data)) return;
     const nickCommand = JSON.parse(evt.data) as NickInterface;
-    if (nickCommand.from !== storeContext.cache.id)
+    if (nickCommand.from !== storeContext.cache.userId)
       setChatName(nickCommand.nick);
   };
-
   const handleStartTyping = (evt: MessageEvent<string>) => {
     if (isNullOrEmpty(evt.data)) return;
     const typingCommand = JSON.parse(evt.data) as TypingInterface;
-    if (typingCommand.from !== storeContext.cache.id) setIsTyping(true);
+    if (typingCommand.from !== storeContext.cache.userId) setIsTyping(true);
   };
   const handleStopTyping = (evt: MessageEvent<string>) => {
     if (isNullOrEmpty(evt.data)) return;
     const typingCommand = JSON.parse(evt.data) as TypingInterface;
-    if (typingCommand.from !== storeContext.cache.id) setIsTyping(false);
+    if (typingCommand.from !== storeContext.cache.userId) setIsTyping(false);
   };
 
   useEffect(() => {

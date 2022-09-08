@@ -11,4 +11,10 @@
     border: 1px solid darkseagreen;
     align-self: flex-end;
   }
+
+  &.deleted {
+    font-size: 0.5rem;
+    color: #999;
+    background-color: #111;
+  }
 }

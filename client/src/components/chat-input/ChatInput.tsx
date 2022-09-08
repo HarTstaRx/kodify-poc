@@ -6,7 +6,7 @@ import {
   MessageInterface,
   StoreContextInterface,
 } from '../../shared/interfaces';
-import { isNullOrEmpty } from '../../shared/utils';
+import { isNullOrEmpty, randomId } from '../../shared/utils';
 
 interface ChatInputProps {
   handleSendMessage: (newMessage: MessageInterface) => void;
@@ -30,6 +30,7 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
     const countdown = text?.startsWith('/countdown ')
       ? text.replace('/countdown ', '')
       : undefined;
+    const deleteLast = text?.startsWith('/oops');
 
     let textToSend: string | undefined;
     if (highlighted) textToSend = highlighted;
@@ -38,13 +39,20 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
     else textToSend = text;
 
     return {
-      from: storeContext.cache.id,
+      id: randomId(),
+      from: storeContext.cache.userId,
       timestamp: new Date(),
-      isDeleted: text === '/oops',
       isFadeLast: text === '/fadelast',
       isHighlighted: highlighted !== undefined,
       newNick: newNick,
       isThinking: thinking !== undefined,
+      deleted: deleteLast
+        ? {
+            from: storeContext.cache.userId,
+            nick: storeContext.cache.nick ?? 'Someone',
+            messageId: storeContext.cache.lastMessageId ?? '',
+          }
+        : undefined,
       countDown:
         countdown !== undefined
           ? {
@@ -59,7 +67,7 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
   const sendMessage = () => {
     handleSendMessage(buildMessage());
     void chatService.stopTyping({
-      from: storeContext.cache.id,
+      from: storeContext.cache.userId,
       nick: storeContext.cache.nick,
     });
     setText('');
@@ -75,7 +83,7 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
     const nowSeconds = new Date().getTime();
     if (nowSeconds - lastSeconds > FIVE_SECONDS)
       void chatService.stopTyping({
-        from: storeContext.cache.id,
+        from: storeContext.cache.userId,
         nick: storeContext.cache.nick,
       });
   }, [lastTyped]);
@@ -84,7 +92,7 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
 
   const sendStartTyping = async () => {
     void chatService.startTyping({
-      from: storeContext.cache.id,
+      from: storeContext.cache.userId,
       nick: storeContext.cache.nick,
     });
     await sleep(FIVE_SECONDS);

@@ -32,6 +32,11 @@ router.post('/nick', (request, response) => {
   response.sendStatus(200);
 });
 
+router.post('/oops', (request, response) => {
+  channel.publish(request.body, 'delete-last');
+  response.sendStatus(200);
+});
+
 router.get('/messages', (request, response) => {
   return channel.subscribe(request, response);
 });

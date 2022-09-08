@@ -1,4 +1,6 @@
 import React from 'react';
+import classnames from 'classnames';
+
 import { MessageInterface } from '../../shared/interfaces';
 
 import './Bubble.scss';
@@ -8,11 +10,22 @@ interface BubbleProps extends MessageInterface {
 }
 
 export const Bubble = ({
+  id,
   text,
-  isDeleted,
+  deleted,
   isMine,
 }: BubbleProps): JSX.Element => {
-  if (isDeleted) return <></>;
+  const classNames = classnames('bubble', {
+    own: isMine,
+    deleted: deleted?.messageId === id,
+  });
 
-  return <div className={`bubble${isMine ? ' own' : ''}`}>{text}</div>;
+  return (
+    <div
+      id={id}
+      className={classNames}
+    >
+      {deleted?.messageId === id ? `deleted by ${deleted.nick}` : text}
+    </div>
+  );
 };

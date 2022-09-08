@@ -24,7 +24,7 @@ export default function StoreProvider(props: Props): JSX.Element {
 
   const [context, setContext] = useState<StoreContextInterface>({
     cache: {
-      id: randomId(),
+      userId: randomId(),
     },
     changeCache,
   });

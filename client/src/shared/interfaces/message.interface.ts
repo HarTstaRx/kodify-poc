@@ -1,8 +1,11 @@
+import { DeleteLastInterface } from './delete-last.interface';
+
 export interface MessageInterface {
+  id: string;
   from: string;
   timestamp: Date;
   text?: string;
-  isDeleted: boolean;
+  deleted?: DeleteLastInterface;
   isThinking: boolean;
   isFadeLast: boolean;
   isHighlighted: boolean;
