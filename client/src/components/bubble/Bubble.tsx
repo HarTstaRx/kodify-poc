@@ -14,10 +14,12 @@ export const Bubble = ({
   text,
   deleted,
   isMine,
+  isThinking,
 }: BubbleProps): JSX.Element => {
   const classNames = classnames('bubble', {
     own: isMine,
     deleted: deleted?.messageId === id,
+    thinking: isThinking,
   });
 
   return (
