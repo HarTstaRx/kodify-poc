@@ -7,11 +7,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint src tests --ext js,ts --max-warnings 0",
-    "build:clean": "node ./scripts/clean.js",
-    "build:bundle": "node ./scripts/bundle.js",
-    "build": "yarn run build:clean && yarn run lint & yarn run build:bundle && yarn run test",
-    "start:server": "servor www index.js 2023 --reload --browse",
-    "start": "yarn run build && yarn run start:server",
+    "start": "yarn run lint && yarn run test && node ./src",
     "test": "jest"
   },
   "dependencies": {
@@ -20,13 +16,8 @@
     "sse-pubsub": "^1.4.1"
   },
   "devDependencies": {
-    "@microsoft/api-documenter": "^7.12.7",
-    "@microsoft/api-extractor": "^7.13.1",
-    "chokidar": "^3.5.3",
-    "esbuild": "^0.15.7",
     "eslint": "^7.19.0",
-    "jest": "^26.6.3",
-    "servor": "^4.0.2"
+    "jest": "^26.6.3"
   },
   "eslintConfig": {
     "extends": "./config/.eslintrc.json"

@@ -1,7 +1,6 @@
 import esbuild from 'esbuild';
 
 const bundle = async () => {
-  console.log('process.env.NODE_ENV', process.env.NODE_ENV);
   esbuild.build({
     entryPoints: ['src/index.js'],
     bundle: true,

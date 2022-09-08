@@ -13,7 +13,7 @@ router.get('/messages', (request, response) => {
   response.sendStatus(200);
 });
 
-app.use('/api', router);
+app.use('/', router);
 
 app.listen(2023, () => {
   console.log('Server listening on', 2023);
