@@ -10,6 +10,7 @@ router.post('/chat', (request, response) => {
 
 router.get('/messages', (request, response) => {
   // TODO
+  response.sendStatus(200);
 });
 
 app.use('/api', router);
