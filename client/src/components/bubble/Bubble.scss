@@ -28,7 +28,7 @@
   }
 
   &.faded {
-    opacity: 0.1;
+    animation: fade-out 2s forwards;
   }
 
   &.hightlighted {
@@ -36,6 +36,14 @@
     filter: brightness(0.6);
   }
 
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0.1;
+    }
+  }
   @media (max-height: $tablet-width) {
     padding: 0px 10px;
     font-size: 0.8rem;
