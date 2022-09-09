@@ -12,6 +12,10 @@ watcher.on('change', async (file) => {
     });
   }
 
-  await build();
-  console.log('Compilado!');
+  try {
+    await build();
+    console.log('Compilado!');
+  } catch(error) {
+    console.error(error);
+  }
 });

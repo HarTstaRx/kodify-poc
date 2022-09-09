@@ -1,25 +1,30 @@
+@import '../../variables';
+
 .bubble {
   display: flex;
-  background-color: gray;
-  border: 1px solid darkgray;
+  background-color: #385170;
+  border: 1px solid #142d4c;
   padding: 5px 20px;
   max-width: 200px;
   border-radius: 10px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  word-break: break-all;
 
   &.own {
-    background-color: green;
-    border: 1px solid darkseagreen;
+    background-color: #9fd3c7;
     align-self: flex-end;
+    color: #142d4c;
   }
 
   &.deleted {
-    font-size: 0.5rem;
-    color: #999;
-    background-color: #111;
+    font-size: 0.75rem;
+    background-color: #142d4c;
+    color: #9fd3c7;
   }
 
   &.thinking {
-    color: darkgray;
+    color: #777;
   }
 
   &.faded {
@@ -29,5 +34,22 @@
   &.hightlighted {
     font-size: 1.1rem;
     filter: brightness(0.6);
+  }
+
+  @media (max-height: $tablet-width) {
+    padding: 0px 10px;
+    font-size: 0.8rem;
+    min-height: 1.3rem;
+  }
+
+  @media (max-width: $tablet-width) {
+    padding: 2px 15px;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: $smartphone-width) {
+    padding: 0px 10px;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
   }
 }
