@@ -25,6 +25,7 @@ function App(): JSX.Element {
     let promise: Promise<void> = Promise.resolve();
     switch (newMessage.command) {
       case CommandEnum.COUNTDOWN:
+        promise = chatService.countdown(newMessage);
         break;
       case CommandEnum.DELETE_LAST:
         promise = chatService.deleteLast(newMessage);

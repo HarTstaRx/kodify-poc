@@ -11,6 +11,7 @@ import { StoreContext } from '../../contexts/store.context';
 import { CommandEnum } from '../../shared/enums/command.enum';
 import {
   BubbleInterface,
+  CountdownInterface,
   DeleteLastInterface,
   FadeLastInterface,
   HighlightCommandInterface,
@@ -81,6 +82,27 @@ export const MessagesList = (): JSX.Element => {
     [messages]
   );
 
+  const handleCountdown = useCallback(
+    (evt: MessageEvent<string>) => {
+      if (isNullOrEmpty(evt.data)) return;
+      const countdownCommand = JSON.parse(evt.data) as CountdownInterface;
+      if (countdownCommand.from === storeContext.cache.userId) return;
+
+      setMessages([
+        ...messages,
+        {
+          id: countdownCommand.id,
+          from: countdownCommand.from,
+          timestamp: countdownCommand.timestamp,
+          text: '',
+          countDown: countdownCommand,
+          isMine: countdownCommand.from === storeContext.cache.userId,
+        },
+      ]);
+    },
+    [messages]
+  );
+
   useEffect(() => {
     scrollHelper.current?.scrollIntoView();
   }, [messages]);
@@ -97,6 +119,7 @@ export const MessagesList = (): JSX.Element => {
     // EventListener cast needed because typescript doesn't like custom event names
     source.addEventListener('delete-last', handleDeleteLast as EventListener);
     source.addEventListener('fade-last', handleFadeLast as EventListener);
+    source.addEventListener('countdown', handleCountdown as EventListener);
 
     return () => {
       source.removeEventListener(
@@ -104,6 +127,7 @@ export const MessagesList = (): JSX.Element => {
         handleDeleteLast as EventListener
       );
       source.removeEventListener('fade-last', handleFadeLast as EventListener);
+      source.removeEventListener('countdown', handleCountdown as EventListener);
     };
   }, [handleDeleteLast]);
 

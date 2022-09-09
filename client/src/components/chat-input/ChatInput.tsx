@@ -35,6 +35,8 @@ export const ChatInput = ({
     if (text?.startsWith('/countdown ')) {
       const countdown = text.replace('/countdown ', '');
       return {
+        id: randomId(),
+        timestamp: new Date(),
         command: CommandEnum.COUNTDOWN,
         from: storeContext.cache.userId,
         seconds: parseInt(countdown.split(' ')[0]),

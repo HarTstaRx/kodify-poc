@@ -5,6 +5,7 @@ export * from './nick.interface';
 export * from './delete-last.interface';
 export * from './fade-last.interface';
 export * from './bubble.interface';
+export * from './countdown.interface';
 export * from './commands/command.interface';
 export * from './commands/countdown-command.interface';
 export * from './commands/delete-command.interface';
