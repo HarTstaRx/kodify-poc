@@ -36,14 +36,6 @@
     filter: brightness(0.6);
   }
 
-  @keyframes fade-out {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0.1;
-    }
-  }
   @media (max-height: $tablet-width) {
     padding: 0px 10px;
     font-size: 0.8rem;
@@ -59,5 +51,19 @@
     padding: 0px 10px;
     font-size: 0.8rem;
     margin-bottom: 0.75rem;
+  }
+}
+
+.countdown {
+  color: black;
+
+  .dot-one {
+    animation: color-change 1s infinite;
+  }
+  .dot-two {
+    animation: color-change 1s infinite 0.25s;
+  }
+  .dot-three {
+    animation: color-change 1s infinite 0.5s;
   }
 }

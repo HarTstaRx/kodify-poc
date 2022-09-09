@@ -1,3 +1,5 @@
+@import '../../variables';
+
 .typing {
   display: inline;
 
@@ -9,14 +11,5 @@
   }
   .dot-three {
     animation: color-change 1s infinite 0.5s;
-  }
-}
-
-@keyframes color-change {
-  from {
-    color: black;
-  }
-  to {
-    color: #b7c7ff;
   }
 }

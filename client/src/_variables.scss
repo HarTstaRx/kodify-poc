@@ -1,2 +1,20 @@
 $smartphone-width: 430px;
 $tablet-width: 820px;
+
+@keyframes color-change {
+  from {
+    color: black;
+  }
+  to {
+    color: #b7c7ff;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.1;
+  }
+}

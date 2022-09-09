@@ -49,6 +49,9 @@ export const Bubble = ({
         className='countdown'
       >
         {secondsLeft}
+        <span className='dot-one'>.</span>
+        <span className='dot-two'>.</span>
+        <span className='dot-three'>.</span>
       </div>
     );
   }
