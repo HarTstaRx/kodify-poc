@@ -21,6 +21,7 @@ import {
 } from '../../shared/interfaces';
 import { isNullOrEmpty } from '../../shared/utils';
 import { Bubble } from '../bubble/Bubble';
+import { Countdown } from '../countdown/Countdown';
 
 export const MessagesList = (): JSX.Element => {
   const storeContext = useContext<StoreContextInterface>(StoreContext);
@@ -133,12 +134,21 @@ export const MessagesList = (): JSX.Element => {
 
   return (
     <div className='chat__body'>
-      {messages.map((msg) => (
-        <Bubble
-          key={msg.id}
-          {...msg}
-        />
-      ))}
+      {messages.map((msg) => {
+        if (msg.countDown)
+          return (
+            <Countdown
+              key={msg.id}
+              {...msg.countDown}
+            />
+          );
+        return (
+          <Bubble
+            key={msg.id}
+            {...msg}
+          />
+        );
+      })}
       <div
         className='scrollHelper'
         ref={scrollHelper}

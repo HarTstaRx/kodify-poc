@@ -1,0 +1,13 @@
+.countdown {
+  color: black;
+
+  .dot-one {
+    animation: color-change 1s infinite;
+  }
+  .dot-two {
+    animation: color-change 1s infinite 0.25s;
+  }
+  .dot-three {
+    animation: color-change 1s infinite 0.5s;
+  }
+}

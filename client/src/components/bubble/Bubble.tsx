@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 import { BubbleInterface } from '../../shared/interfaces';
@@ -13,7 +13,6 @@ export const Bubble = ({
   isFaded,
   isThinking,
   isHighlighted,
-  countDown,
 }: BubbleInterface): JSX.Element => {
   const classNames = classnames('bubble', {
     own: isMine,
@@ -22,39 +21,6 @@ export const Bubble = ({
     faded: isFaded,
     hightlighted: isHighlighted,
   });
-
-  const intervalRef = useRef<NodeJS.Timer>();
-  const [secondsLeft, setSecondsLeft] = useState<number>(
-    countDown?.seconds ?? 0
-  );
-
-  useEffect(() => {
-    if (countDown === undefined) return;
-    intervalRef.current = setInterval(() => {
-      if (secondsLeft > 0) setSecondsLeft(secondsLeft - 1);
-      else window.location.href = countDown.url;
-    }, 1000);
-
-    return () => {
-      if (intervalRef.current)
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        clearInterval(intervalRef.current);
-    };
-  });
-
-  if (countDown !== undefined) {
-    return (
-      <div
-        id={id}
-        className='countdown'
-      >
-        {secondsLeft}
-        <span className='dot-one'>.</span>
-        <span className='dot-two'>.</span>
-        <span className='dot-three'>.</span>
-      </div>
-    );
-  }
 
   const printText = (message: string): string => {
     let text = message;
