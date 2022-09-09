@@ -12,12 +12,14 @@ export const Bubble = ({
   deleted,
   isFaded,
   isThinking,
+  isHighlighted,
 }: BubbleInterface): JSX.Element => {
   const classNames = classnames('bubble', {
     own: isMine,
     deleted: deleted?.messageId === id,
     thinking: isThinking,
     faded: isFaded,
+    hightlighted: isHighlighted,
   });
 
   const printText = (message: string): string => {

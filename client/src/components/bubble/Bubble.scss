@@ -25,4 +25,9 @@
   &.faded {
     opacity: 0.1;
   }
+
+  &.hightlighted {
+    font-size: 1.1rem;
+    filter: brightness(0.6);
+  }
 }

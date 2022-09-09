@@ -6,6 +6,7 @@ export interface BubbleInterface extends MessageInterface {
   isMine: boolean;
   isFaded?: boolean;
   isThinking?: boolean;
+  isHighlighted?: boolean;
   deleted?: DeleteLastInterface;
   countDown?: CountdownInterface;
 }

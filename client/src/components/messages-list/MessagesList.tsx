@@ -8,6 +8,7 @@ import React, {
 
 import { CHAT_LISTENER } from '../../constants';
 import { StoreContext } from '../../contexts/store.context';
+import { CommandEnum } from '../../shared/enums/command.enum';
 import {
   BubbleInterface,
   DeleteLastInterface,
@@ -38,6 +39,8 @@ export const MessagesList = (): JSX.Element => {
         {
           ...newMessage,
           isMine: newMessage.from === storeContext.cache.userId,
+          isHighlighted: newMessage.command === CommandEnum.HIGHLIGHT,
+          isThinking: newMessage.command === CommandEnum.THINK,
         },
       ]);
       storeContext.changeCache({ lastMessageId: newMessage.id });
