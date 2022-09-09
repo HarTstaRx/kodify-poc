@@ -32,8 +32,13 @@ router.post('/nick', (request, response) => {
   response.sendStatus(200);
 });
 
-router.post('/oops', (request, response) => {
+router.post('/delete-last', (request, response) => {
   channel.publish(request.body, 'delete-last');
+  response.sendStatus(200);
+});
+
+router.post('/fadelast', (request, response) => {
+  channel.publish(request.body, 'fade-last');
   response.sendStatus(200);
 });
 

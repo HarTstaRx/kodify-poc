@@ -1,72 +1,93 @@
 import React, { useCallback, useContext, useState, useRef } from 'react';
 
 import { StoreContext } from '../../contexts/store.context';
-import { chatService } from '../../services/chat.service';
+import { CommandEnum } from '../../shared/enums/command.enum';
 import {
-  MessageInterface,
+  CommandInterface,
   StoreContextInterface,
+  TypingCommandInterface,
 } from '../../shared/interfaces';
 import { isNullOrEmpty, randomId } from '../../shared/utils';
 
 interface ChatInputProps {
-  handleSendMessage: (newMessage: MessageInterface) => void;
+  handleSendMessage: (newMessage: CommandInterface) => void;
+  handleStartTyping: (typingCommand: TypingCommandInterface) => void;
+  handleStopTyping: (typingCommand: TypingCommandInterface) => void;
 }
 
-export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
+export const ChatInput = ({
+  handleSendMessage,
+  handleStartTyping,
+  handleStopTyping,
+}: ChatInputProps) => {
   const storeContext = useContext<StoreContextInterface>(StoreContext);
-  const [text, setText] = useState<string | undefined>();
+  const [text, setText] = useState<string>('');
   const lastTyped = useRef<Date>(new Date());
 
-  const buildMessage = (): MessageInterface => {
-    const highlighted = text?.startsWith('/highlight ')
-      ? text.replace('/highlight ', '')
-      : undefined;
-    const newNick = text?.startsWith('/nick ')
-      ? text.replace('/nick ', '')
-      : undefined;
-    const thinking = text?.startsWith('/think ')
-      ? text.replace('/think ', '')
-      : undefined;
-    const countdown = text?.startsWith('/countdown ')
-      ? text.replace('/countdown ', '')
-      : undefined;
-    const deleteLast = text?.startsWith('/oops');
-
-    let textToSend: string | undefined;
-    if (highlighted) textToSend = highlighted;
-    else if (thinking) textToSend = thinking;
-    else if (countdown) textToSend = countdown;
-    else textToSend = text;
-
-    return {
+  const buildMessage = (): CommandInterface => {
+    if (text?.startsWith('/nick ')) {
+      return {
+        command: CommandEnum.NICK,
+        from: storeContext.cache.userId,
+        nick: text.replace('/nick ', ''),
+      };
+    }
+    if (text?.startsWith('/countdown ')) {
+      const countdown = text.replace('/countdown ', '');
+      return {
+        command: CommandEnum.COUNTDOWN,
+        from: storeContext.cache.userId,
+        seconds: parseInt(countdown.split(' ')[0]),
+        url: countdown.split(' ')[1],
+      };
+    }
+    if (text?.startsWith('/oops')) {
+      return {
+        command: CommandEnum.DELETE_LAST,
+        from: storeContext.cache.userId,
+        nick: storeContext.cache.nick ?? 'Someone',
+        messageId: storeContext.cache.lastMessageId ?? '',
+      };
+    }
+    if (text?.startsWith('/fadelast')) {
+      return {
+        command: CommandEnum.FADE_LAST,
+        from: storeContext.cache.userId,
+        nick: storeContext.cache.nick ?? 'Someone',
+        messageId: storeContext.cache.lastMessageId ?? '',
+      };
+    }
+    const newMessage = {
       id: randomId(),
       from: storeContext.cache.userId,
       timestamp: new Date(),
-      isFadeLast: text === '/fadelast',
-      isHighlighted: highlighted !== undefined,
-      newNick: newNick,
-      isThinking: thinking !== undefined,
-      deleted: deleteLast
-        ? {
-            from: storeContext.cache.userId,
-            nick: storeContext.cache.nick ?? 'Someone',
-            messageId: storeContext.cache.lastMessageId ?? '',
-          }
-        : undefined,
-      countDown:
-        countdown !== undefined
-          ? {
-              seconds: parseInt(countdown.split(' ')[0]),
-              url: countdown.split(' ')[1],
-            }
-          : undefined,
-      text: textToSend,
+      text,
+    };
+    if (text?.startsWith('/highlight ')) {
+      return {
+        command: CommandEnum.HIGHLIGHT,
+        ...newMessage,
+        text: text.replace('/highlight ', ''),
+      };
+    }
+    if (text?.startsWith('/think ')) {
+      return {
+        command: CommandEnum.THINK,
+        ...newMessage,
+        text: text.replace('/think ', ''),
+      };
+    }
+
+    return {
+      command: CommandEnum.MESSAGE,
+      ...newMessage,
     };
   };
 
   const sendMessage = () => {
     handleSendMessage(buildMessage());
-    void chatService.stopTyping({
+    void handleStopTyping({
+      command: CommandEnum.STOP_TYPING,
       from: storeContext.cache.userId,
       nick: storeContext.cache.nick,
     });
@@ -78,39 +99,45 @@ export const ChatInput = ({ handleSendMessage }: ChatInputProps) => {
   };
 
   const FIVE_SECONDS = 5000;
-  const sendStopTyping = useCallback(() => {
-    const lastSeconds = lastTyped.current.getTime();
-    const nowSeconds = new Date().getTime();
-    if (nowSeconds - lastSeconds > FIVE_SECONDS)
-      void chatService.stopTyping({
-        from: storeContext.cache.userId,
-        nick: storeContext.cache.nick,
-      });
-  }, [lastTyped]);
-
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-  const sendStartTyping = async () => {
-    void chatService.startTyping({
+  const sendStopTyping = () => {
+    handleStopTyping({
+      command: CommandEnum.STOP_TYPING,
       from: storeContext.cache.userId,
       nick: storeContext.cache.nick,
     });
-    await sleep(FIVE_SECONDS);
-    sendStopTyping();
+  };
+  const sendStartTyping = () => {
+    handleStartTyping({
+      command: CommandEnum.START_TYPING,
+      from: storeContext.cache.userId,
+      nick: storeContext.cache.nick,
+    });
   };
 
-  const handleTextChange = (newText: string) => {
-    setText(newText);
-    lastTyped.current = new Date();
-    void sendStartTyping();
-  };
+  const handleTextChange = useCallback(
+    async (newText: string) => {
+      setText(newText);
+      let lastSeconds = lastTyped.current.getTime();
+      let nowSeconds = new Date().getTime();
+      if (nowSeconds - lastSeconds > FIVE_SECONDS) sendStartTyping();
+
+      lastTyped.current = new Date();
+      await sleep(FIVE_SECONDS);
+
+      lastSeconds = lastTyped.current.getTime();
+      nowSeconds = new Date().getTime();
+      if (nowSeconds - lastSeconds > FIVE_SECONDS) sendStopTyping();
+    },
+    [lastTyped]
+  );
 
   return (
     <div className='chat__input'>
       <input
         type='text'
         value={text}
-        onChange={(evt) => handleTextChange(evt.target.value)}
+        onChange={(evt) => void handleTextChange(evt.target.value)}
         onKeyDown={(evt) => handleKeyDown(evt.key)}
       />
       <button

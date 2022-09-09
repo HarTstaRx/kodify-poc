@@ -21,4 +21,8 @@
   &.thinking {
     color: darkgray;
   }
+
+  &.faded {
+    opacity: 0.1;
+  }
 }

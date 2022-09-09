@@ -1,0 +1,11 @@
+export enum CommandEnum {
+  MESSAGE,
+  THINK,
+  FADE_LAST,
+  DELETE_LAST,
+  START_TYPING,
+  STOP_TYPING,
+  NICK,
+  COUNTDOWN,
+  HIGHLIGHT,
+}

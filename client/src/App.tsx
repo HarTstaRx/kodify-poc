@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { ChatInput } from './components/chat-input/ChatInput';
 import {
-  MessageInterface,
+  CommandInterface,
   NickInterface,
   StoreContextInterface,
   TypingInterface,
@@ -12,6 +12,7 @@ import { chatService } from './services/chat.service';
 import { StoreContext } from './contexts/store.context';
 import { CHAT_LISTENER } from './constants';
 import { isNullOrEmpty } from './shared/utils';
+import { CommandEnum } from './shared/enums/command.enum';
 
 import './App.scss';
 
@@ -20,32 +21,30 @@ function App(): JSX.Element {
   const [chatName, setChatName] = useState<string>('Someone');
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const changeNick = async (newMessage: MessageInterface) =>
-    await chatService.changeNick({
-      from: newMessage.from,
-      nick: newMessage.newNick ?? chatName,
-    });
-
-  const deleteLast = async (newMessage: MessageInterface) =>
-    await chatService.deleteLast({
-      from: newMessage.from,
-      nick: newMessage.newNick ?? chatName,
-      messageId: newMessage.deleted?.messageId ?? '',
-    });
-
-  const sendMessage = async (newMessage: MessageInterface) =>
-    await chatService.sendMessage(newMessage);
-
-  const handleSendMessage = async (newMessage: MessageInterface) => {
-    let promise = sendMessage;
-    if (newMessage.newNick) {
-      storeContext.changeCache({ nick: newMessage.newNick });
-      promise = changeNick;
-    } else if (newMessage.deleted) {
-      promise = deleteLast;
+  const handleSendMessage = async (newMessage: CommandInterface) => {
+    let promise: Promise<void> = Promise.resolve();
+    switch (newMessage.command) {
+      case CommandEnum.COUNTDOWN:
+        break;
+      case CommandEnum.DELETE_LAST:
+        promise = chatService.deleteLast(newMessage);
+        break;
+      case CommandEnum.FADE_LAST:
+        promise = chatService.fadeLast(newMessage);
+        break;
+      case CommandEnum.NICK:
+        storeContext.changeCache({ nick: newMessage.nick });
+        promise = chatService.changeNick(newMessage);
+        break;
+      case CommandEnum.THINK:
+      case CommandEnum.HIGHLIGHT:
+      case CommandEnum.MESSAGE:
+        promise = chatService.sendMessage(newMessage);
+        break;
     }
+
     try {
-      await promise(newMessage);
+      await promise;
     } catch (error) {
       console.log(error);
     }
@@ -100,7 +99,11 @@ function App(): JSX.Element {
             {isTyping ? <Typing /> : <></>}
           </div>
           <MessagesList />
-          <ChatInput handleSendMessage={handleSendMessage} />
+          <ChatInput
+            handleSendMessage={handleSendMessage}
+            handleStartTyping={chatService.startTyping}
+            handleStopTyping={chatService.stopTyping}
+          />
         </div>
       </main>
       <footer>Proof of concept by David Díez for Kodify</footer>

@@ -1,25 +1,23 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { MessageInterface } from '../../shared/interfaces';
+import { BubbleInterface } from '../../shared/interfaces';
 
 import './Bubble.scss';
 
-interface BubbleProps extends MessageInterface {
-  isMine: boolean;
-}
-
 export const Bubble = ({
   id,
+  isMine,
   text,
   deleted,
-  isMine,
+  isFaded,
   isThinking,
-}: BubbleProps): JSX.Element => {
+}: BubbleInterface): JSX.Element => {
   const classNames = classnames('bubble', {
     own: isMine,
     deleted: deleted?.messageId === id,
     thinking: isThinking,
+    faded: isFaded,
   });
 
   const printText = (message: string): string => {

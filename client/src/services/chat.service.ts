@@ -3,6 +3,7 @@ import {
   TypingInterface,
   NickInterface,
   DeleteLastInterface,
+  FadeLastInterface,
 } from '../shared/interfaces';
 import { BaseService } from './base.service';
 
@@ -18,7 +19,9 @@ class ChatService extends BaseService {
   changeNick = (command: NickInterface): Promise<void> =>
     this.postData(`${this.#endpoint}nick`, command);
   deleteLast = (command: DeleteLastInterface): Promise<void> =>
-    this.postData(`${this.#endpoint}oops`, command);
+    this.postData(`${this.#endpoint}delete-last`, command);
+  fadeLast = (command: FadeLastInterface): Promise<void> =>
+    this.postData(`${this.#endpoint}fadelast`, command);
 }
 
 export const chatService = new ChatService();
