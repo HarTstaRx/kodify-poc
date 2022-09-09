@@ -12,35 +12,14 @@ app.use((_request, response, next) => {
   response.header('Access-Control-Allow-Headers', '*');
   next();
 });
-router.post('/chat', (request, response) => {
-  channel.publish(request.body, 'message');
-  response.sendStatus(200);
-});
 
-router.post('/start-typing', (request, response) => {
-  channel.publish(request.body, 'start-typing');
-  response.sendStatus(200);
-});
-
-router.post('/stop-typing', (request, response) => {
-  channel.publish(request.body, 'stop-typing');
-  response.sendStatus(200);
-});
-
-router.post('/nick', (request, response) => {
-  channel.publish(request.body, 'nick');
-  response.sendStatus(200);
-});
-
-router.post('/delete-last', (request, response) => {
-  channel.publish(request.body, 'delete-last');
-  response.sendStatus(200);
-});
-
-router.post('/fadelast', (request, response) => {
-  channel.publish(request.body, 'fade-last');
-  response.sendStatus(200);
-});
+const commands = ['message', 'start-typing', 'stop-typing', 'nick', 'delete-last', 'fade-last', 'countdown'];
+for (const command of commands) {
+  router.post(`/${command}`, (request, response) => {
+    channel.publish(request.body, command);
+    response.sendStatus(200);
+  })
+}
 
 router.get('/messages', (request, response) => {
   return channel.subscribe(request, response);
