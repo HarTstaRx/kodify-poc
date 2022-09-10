@@ -4,7 +4,10 @@ import bodyParser from 'body-parser';
 
 const router = express.Router();
 const app = express();
-const channel = new SSEChannel();
+const channel = new SSEChannel({
+  pingInterval: 1000,
+  historySize: 1000
+});
 
 app.use(bodyParser.json());
 app.use((_request, response, next) => {

@@ -68,24 +68,30 @@ function App(): JSX.Element {
     if (typingCommand.from !== storeContext.cache.userId) setIsTyping(false);
   };
 
-  useEffect(() => {
-    const source = new EventSource(CHAT_LISTENER);
+  const subscribeEvents = (source: EventSource) => {
     // EventListener cast needed because typescript doesn't like custom event names
     source.addEventListener('start-typing', handleStartTyping as EventListener);
     source.addEventListener('stop-typing', handleStopTyping as EventListener);
     source.addEventListener('nick', handleChangeNick as EventListener);
+  };
+  const unsubscribeEvents = (source: EventSource) => {
+    source.removeEventListener(
+      'start-typing',
+      handleStartTyping as EventListener
+    );
+    source.removeEventListener(
+      'stop-typing',
+      handleStopTyping as EventListener
+    );
+    source.removeEventListener('nick', handleChangeNick as EventListener);
+    source.close();
+  };
 
-    return () => {
-      source.removeEventListener(
-        'start-typing',
-        handleStartTyping as EventListener
-      );
-      source.removeEventListener(
-        'stop-typing',
-        handleStopTyping as EventListener
-      );
-      source.removeEventListener('nick', handleChangeNick as EventListener);
-    };
+  useEffect(() => {
+    const source = new EventSource(CHAT_LISTENER);
+    subscribeEvents(source);
+
+    return () => unsubscribeEvents(source);
   }, []);
 
   return (
