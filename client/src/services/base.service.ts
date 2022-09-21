@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 export class BaseService {
   #removeEmpty = <T>(obj: T): unknown =>
     Object.fromEntries(
-      Object.entries(obj)
+      Object.entries(obj as object)
         .filter(([, v]) => v != null && typeof v !== 'undefined' && v !== '')
         .map(([k, v]) =>
           typeof v === 'object' ? [k, this.#removeEmpty(v)] : [k, v]

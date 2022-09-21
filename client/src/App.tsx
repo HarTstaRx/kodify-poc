@@ -107,9 +107,13 @@ function App(): JSX.Element {
           </div>
           <MessagesList />
           <ChatInput
-            handleSendMessage={handleSendMessage}
-            handleStartTyping={chatService.startTyping}
-            handleStopTyping={chatService.stopTyping}
+            handleSendMessage={(newMessage) =>
+              void handleSendMessage(newMessage)
+            }
+            handleStartTyping={(command) =>
+              void chatService.startTyping(command)
+            }
+            handleStopTyping={(command) => void chatService.stopTyping(command)}
           />
         </div>
       </main>
